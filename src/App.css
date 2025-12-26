@@ -9,7 +9,7 @@
 .game-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 10px;
+  padding: 8px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -17,14 +17,14 @@
 
 .game-container h1 {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: #333;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .game-content {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   align-items: flex-start;
   justify-content: center;
   flex: 1;
@@ -36,7 +36,7 @@
   flex-direction: column;
   gap: 3px;
   background: #f5f5dc;
-  padding: 10px;
+  padding: 8px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -47,8 +47,8 @@
 }
 
 .square {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border: 1px solid #333;
   display: flex;
   align-items: center;
@@ -63,8 +63,8 @@
 .square-number {
   position: absolute;
   top: 2px;
-  left: 3px;
-  font-size: 8px;
+  left: 4px;
+  font-size: 9px;
   color: #666;
 }
 
@@ -79,6 +79,64 @@
 .square.has-player {
   border: 2px solid #667eea;
   box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.square.has-player.player-arrival {
+  animation: square-flash 0.5s ease-out;
+}
+
+@keyframes square-flash {
+  0% {
+    background-color: #fff9c4;
+    box-shadow: 0 0 20px rgba(255, 249, 196, 0.8);
+  }
+  100% {
+    background-color: inherit;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
+  }
+}
+
+.snake-indicator,
+.ladder-indicator {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.snake-indicator {
+  bottom: 2px;
+  right: 2px;
+  background: rgba(255, 0, 0, 0.1);
+  padding: 1px 3px;
+  border-radius: 3px;
+  color: #d32f2f;
+}
+
+.ladder-indicator {
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 128, 0, 0.1);
+  padding: 1px 3px;
+  border-radius: 3px;
+  color: #2e7d32;
+}
+
+.snake-icon,
+.ladder-icon {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.destination {
+  font-size: 8px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .players-container {
@@ -89,55 +147,112 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 
 .player-piece {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.snake-head,
-.ladder-bottom {
-  font-size: 14px;
+.player-piece.animating {
+  animation: bounce 0.3s ease-in-out;
+}
+
+.player-piece.snake-jump {
+  animation: snake-slide 0.5s ease-in-out;
+}
+
+.player-piece.ladder-jump {
+  animation: ladder-climb 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.2) translateY(-5px);
+  }
+}
+
+@keyframes snake-slide {
+  0% {
+    transform: scale(1.3);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+  }
+  50% {
+    transform: scale(0.8) translateY(10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes ladder-climb {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(0, 128, 0, 0.6);
+  }
+  50% {
+    transform: scale(0.8) translateY(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.player-number {
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar {
-  min-width: 200px;
-  padding: 15px;
+  min-width: 180px;
+  padding: 12px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .message {
   background: #e3f2fd;
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
   text-align: center;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .dice-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .dice {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,19 +271,19 @@
 }
 
 .dice-face {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
   color: #fff;
 }
 
 .dice-container button {
-  padding: 8px 16px;
+  padding: 6px 14px;
   background: #667eea;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: background 0.3s;
 }
@@ -184,24 +299,24 @@
 
 .info {
   background: #f5f5f5;
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
 }
 
 .info p {
   margin: 4px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .reset-btn {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   background: #ff6b6b;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: background 0.3s;
 }
@@ -212,25 +327,25 @@
 
 .legend {
   background: #f5f5f5;
-  padding: 10px;
+  padding: 8px;
   border-radius: 8px;
 }
 
 .legend h3 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
+  margin: 0 0 6px 0;
+  font-size: 13px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin: 6px 0;
-  font-size: 12px;
+  margin: 5px 0;
+  font-size: 11px;
 }
 
 .legend-icon {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .setup-container {
@@ -241,34 +356,34 @@
   flex: 1;
   background: #fff;
   border-radius: 10px;
-  padding: 30px;
+  padding: 25px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .setup-container h2 {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   color: #333;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .player-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 12px;
   justify-content: center;
 }
 
 .player-select-btn {
-  padding: 15px 30px;
+  padding: 12px 25px;
   background: #667eea;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   transition: background 0.3s, transform 0.2s;
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .player-select-btn:hover {
@@ -283,17 +398,17 @@
 .current-player {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: #f5f5f5;
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .player-indicator {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -301,13 +416,13 @@
 
 .players-list {
   background: #f5f5f5;
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
 }
 
 .players-list h3 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
+  margin: 0 0 8px 0;
+  font-size: 13px;
   color: #333;
 }
 
@@ -315,12 +430,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
-  margin: 6px 0;
+  padding: 7px;
+  margin: 5px 0;
   background: #fff;
   border-radius: 6px;
   border-left: 4px solid transparent;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .player-item.active {
@@ -338,26 +453,26 @@
 
 .player-pos {
   color: #666;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .winner-badge {
-  font-size: 16px;
-  margin-left: 8px;
+  font-size: 14px;
+  margin-left: 6px;
 }
 
 .change-players-btn {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   background: #6c757d;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: background 0.3s;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .change-players-btn:hover {

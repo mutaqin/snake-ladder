@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 const SNAKES: Record<number, number> = {
@@ -15,6 +15,8 @@ interface Player {
   id: number
   position: number
   won: boolean
+  animatingTo?: number
+  jumpType?: 'snake' | 'ladder' | null
 }
 
 function Board({ players }: { players: Player[] }) {
@@ -31,7 +33,7 @@ function Board({ players }: { players: Player[] }) {
       const num = row * 10 + col + 1
       const hasSnake = SNAKES[num]
       const hasLadder = LADDERS[num]
-      const playersOnSquare = players.filter(p => p.position === num)
+      const playersOnSquare = players.filter(p => p.position === num || (p.animatingTo && p.animatingTo === num))
       
       rowSquares.push(
         <div 
@@ -39,22 +41,34 @@ function Board({ players }: { players: Player[] }) {
           className={`square ${playersOnSquare.length > 0 ? 'has-player' : ''} ${hasSnake ? 'snake' : ''} ${hasLadder ? 'ladder' : ''}`}
         >
           <span className="square-number">{num}</span>
+          {hasSnake && (
+            <div className="snake-indicator">
+              <span className="snake-icon">🐍</span>
+              <span className="destination">→ {SNAKES[num]}</span>
+            </div>
+          )}
+          {hasLadder && (
+            <div className="ladder-indicator">
+              <span className="ladder-icon">🪜</span>
+              <span className="destination">→ {LADDERS[num]}</span>
+            </div>
+          )}
           {playersOnSquare.length > 0 && (
             <div className="players-container">
               {playersOnSquare.map(p => (
                 <div 
                   key={p.id} 
-                  className="player-piece" 
+                  className={`player-piece ${p.animatingTo && p.animatingTo === num ? 'animating' : ''} ${p.jumpType ? `${p.jumpType}-jump` : ''}`}
                   style={{ 
                     backgroundColor: PLAYER_COLORS[p.id % PLAYER_COLORS.length],
                     transform: `scale(${0.7 + (1 / (playersOnSquare.length + 1))})`
                   }}
-                />
+                >
+                  <span className="player-number">{p.id + 1}</span>
+                </div>
               ))}
             </div>
           )}
-          {hasSnake && <div className="snake-head">🐍</div>}
-          {hasLadder && <div className="ladder-bottom">🪜</div>}
         </div>
       )
     }
@@ -88,9 +102,17 @@ function App() {
   })
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
   const [diceValue, setDiceValue] = useState(1)
+  const [rolledValue, setRolledValue] = useState<number | null>(null)
   const [rolling, setRolling] = useState(false)
+  const [moving, setMoving] = useState(false)
   const [message, setMessage] = useState('Roll the dice to start!')
   const [gameStarted, setGameStarted] = useState(false)
+
+  useEffect(() => {
+    if (gameStarted && !rolling && !moving && rolledValue === null) {
+      setMessage(`Player ${players[currentPlayerIndex]?.id + 1}'s turn!`)
+    }
+  }, [currentPlayerIndex, gameStarted, rolling, moving, rolledValue, players])
 
   const startGame = (num: number) => {
     setNumPlayers(num)
@@ -102,13 +124,60 @@ function App() {
     setCurrentPlayerIndex(0)
     setDiceValue(1)
     setMessage(`Player 1's turn! Roll the dice!`)
+    setRolledValue(null)
     setGameStarted(true)
+  }
+
+  const animateMovement = (playerIndex: number, start: number, end: number, onComplete: () => void) => {
+    let currentStep = start
+    const stepDelay = 300
+    setMoving(true)
+    
+    const moveStep = () => {
+      if (start < end) {
+        currentStep++
+      } else if (start > end) {
+        currentStep--
+      } else {
+        onComplete()
+        return
+      }
+      
+      setPlayers(prevPlayers => {
+        const updatedPlayers = [...prevPlayers]
+        updatedPlayers[playerIndex] = { 
+          ...updatedPlayers[playerIndex], 
+          position: currentStep,
+          animatingTo: currentStep 
+        }
+        return updatedPlayers
+      })
+      
+      const stepsLeft = Math.abs(end - currentStep)
+      if (stepsLeft > 0) {
+        setTimeout(moveStep, stepDelay)
+      } else {
+        setTimeout(() => {
+          setPlayers(prevPlayers => {
+            const finalPlayers = [...prevPlayers]
+            finalPlayers[playerIndex] = { ...finalPlayers[playerIndex], animatingTo: undefined }
+            return finalPlayers
+          })
+          setMoving(false)
+          onComplete()
+        }, stepDelay)
+      }
+    }
+    
+    moveStep()
   }
 
   const rollDice = () => {
     const currentPlayer = players[currentPlayerIndex]
-    if (currentPlayer.won) {
-      setMessage(`Player ${currentPlayer.id + 1} already won! Next player's turn.`)
+    if (currentPlayer.won || moving || rolling) {
+      if (currentPlayer.won) {
+        setMessage(`Player ${currentPlayer.id + 1} already won! Next player's turn.`)
+      }
       return
     }
 
@@ -130,52 +199,112 @@ function App() {
         setRolling(false)
         const finalValue = rolls[rolls.length - 1]
         setDiceValue(finalValue)
+        setRolledValue(finalValue)
         
         let newPosition = currentPlayer.position + finalValue
         if (newPosition > 100) {
           setMessage(`Player ${currentPlayer.id + 1} rolled ${finalValue}. Need exactly ${100 - currentPlayer.position} to win!`)
+          setTimeout(() => {
+            setRolledValue(null)
+            setCurrentPlayerIndex((prev) => (prev + 1) % numPlayers)
+          }, 1000)
         } else {
-          const updatedPlayers = [...players]
-          updatedPlayers[currentPlayerIndex] = { ...currentPlayer, position: newPosition }
-          setPlayers(updatedPlayers)
+          setMessage(`Player ${currentPlayer.id + 1} rolled ${finalValue}. Moving...`)
           
-          if (SNAKES[newPosition]) {
-            setTimeout(() => {
-              const finalPlayers = [...updatedPlayers]
-              finalPlayers[currentPlayerIndex] = { ...currentPlayer, position: SNAKES[newPosition] }
-              setPlayers(finalPlayers)
-              setMessage(`Oh no! Player ${currentPlayer.id + 1} bitten by snake! Going down to ${SNAKES[newPosition]}`)
-            }, 500)
-          } else if (LADDERS[newPosition]) {
-            setTimeout(() => {
-              const finalPlayers = [...updatedPlayers]
-              finalPlayers[currentPlayerIndex] = { ...currentPlayer, position: LADDERS[newPosition] }
-              setPlayers(finalPlayers)
-              setMessage(`Yay! Player ${currentPlayer.id + 1} found a ladder! Going up to ${LADDERS[newPosition]}`)
-            }, 500)
-          } else {
-            setMessage(`Player ${currentPlayer.id + 1} rolled ${finalValue}. Moved to ${newPosition}`)
-          }
-          
-          const checkWin = (pos: number) => {
-            return pos === 100 || (LADDERS[pos] && LADDERS[pos] === 100) || (SNAKES[pos] && SNAKES[pos] === 100)
-          }
-          
-          if (checkWin(newPosition)) {
-            setTimeout(() => {
-              const winPlayers = [...players]
-              winPlayers[currentPlayerIndex] = { ...currentPlayer, position: newPosition, won: true }
-              setPlayers(winPlayers)
-              setMessage(`🎉 Congratulations Player ${currentPlayer.id + 1}! You won! 🎉`)
-            }, 700)
-          } else {
-            setTimeout(() => {
-              setCurrentPlayerIndex((prev) => (prev + 1) % numPlayers)
-            }, 1000)
-          }
+          animateMovement(currentPlayerIndex, currentPlayer.position, newPosition, () => {
+            setPlayers(prevPlayers => {
+              const updatedPlayers = [...prevPlayers]
+              const playerAfterMove = updatedPlayers[currentPlayerIndex]
+              
+              if (SNAKES[newPosition]) {
+                setMessage(`Oh no! Snake! Going down to ${SNAKES[newPosition]}`)
+                
+                const finalPlayers = [...updatedPlayers]
+                finalPlayers[currentPlayerIndex] = { 
+                  ...playerAfterMove, 
+                  position: SNAKES[newPosition],
+                  animatingTo: SNAKES[newPosition],
+                  jumpType: 'snake'
+                }
+                setPlayers(finalPlayers)
+                
+                setTimeout(() => {
+                  setPlayers(prevSnakePlayers => {
+                    const snakePlayers = [...prevSnakePlayers]
+                    snakePlayers[currentPlayerIndex] = { 
+                      ...snakePlayers[currentPlayerIndex],
+                      animatingTo: undefined,
+                      jumpType: null
+                    }
+                    return snakePlayers
+                  })
+                  
+                  checkWinAndNextTurn(SNAKES[newPosition], finalValue)
+                }, 500)
+              } else if (LADDERS[newPosition]) {
+                setMessage(`Yay! Ladder! Going up to ${LADDERS[newPosition]}`)
+                
+                const finalPlayers = [...updatedPlayers]
+                finalPlayers[currentPlayerIndex] = { 
+                  ...playerAfterMove, 
+                  position: LADDERS[newPosition],
+                  animatingTo: LADDERS[newPosition],
+                  jumpType: 'ladder'
+                }
+                setPlayers(finalPlayers)
+                
+                setTimeout(() => {
+                  setPlayers(prevLadderPlayers => {
+                    const ladderPlayers = [...prevLadderPlayers]
+                    ladderPlayers[currentPlayerIndex] = { 
+                      ...ladderPlayers[currentPlayerIndex],
+                      animatingTo: undefined,
+                      jumpType: null
+                    }
+                    return ladderPlayers
+                  })
+                  
+                  checkWinAndNextTurn(LADDERS[newPosition], finalValue)
+                }, 500)
+              } else {
+                setMessage(`Player ${currentPlayer.id + 1} moved to ${newPosition}`)
+                checkWinAndNextTurn(newPosition, finalValue)
+              }
+              
+              return updatedPlayers
+            })
+          })
         }
       }
     }, 100)
+  }
+
+  const checkWinAndNextTurn = (finalPos: number, diceRoll: number) => {
+    const checkWin = (pos: number) => {
+      return pos === 100
+    }
+    
+    if (checkWin(finalPos)) {
+      setPlayers(prevPlayers => {
+        const winPlayers = [...prevPlayers]
+        const winPlayerIndex = winPlayers.findIndex(p => p.id === currentPlayerIndex)
+        winPlayers[winPlayerIndex] = { ...winPlayers[winPlayerIndex], won: true }
+        return winPlayers
+      })
+      setRolledValue(null)
+      setMessage(`🎉 Congratulations Player ${currentPlayerIndex + 1}! You won! 🎉`)
+    } else {
+      setTimeout(() => {
+        setRolledValue(null)
+        if (diceRoll === 6) {
+          setMessage(`Player ${currentPlayerIndex + 1} rolled 6! Roll again!`)
+        } else {
+          const nextPlayer = (currentPlayerIndex + 1) % numPlayers
+          setCurrentPlayerIndex(nextPlayer)
+          setMessage(`Player ${nextPlayer + 1}'s turn!`)
+        }
+      }, 500)
+    }
   }
 
   const resetGame = () => {
@@ -220,7 +349,7 @@ function App() {
         <Board players={players} />
         <div className="sidebar">
           <div className="message">{message}</div>
-          <Dice value={diceValue} onRoll={rollDice} rolling={rolling} />
+          <Dice value={diceValue} onRoll={rollDice} rolling={rolling || moving} />
           
           <div className="current-player">
             <div 
