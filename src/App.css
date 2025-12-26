@@ -1,54 +1,74 @@
 #root {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0.5rem;
+  padding: 0;
   height: 100vh;
   overflow: hidden;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+
 .game-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 8px;
+  padding: 0;
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .game-container h1 {
   text-align: center;
-  margin-bottom: 10px;
+  margin: 0;
+  padding: 8px 0;
   color: #333;
-  font-size: 22px;
+  font-size: clamp(16px, 3vw, 22px);
+  flex-shrink: 0;
 }
 
 .game-content {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: flex-start;
   justify-content: center;
   flex: 1;
   overflow: hidden;
+  padding: 5px;
 }
 
 .board {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   background: #f5f5dc;
-  padding: 8px;
-  border-radius: 10px;
+  padding: 6px;
+  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  max-height: 100%;
+  flex: 0 0 auto;
 }
 
 .board-row {
   display: flex;
-  gap: 3px;
+  gap: 2px;
+  justify-content: center;
 }
 
 .square {
-  width: 50px;
-  height: 50px;
+  width: clamp(30px, 7vw, 50px);
+  height: clamp(30px, 7vw, 50px);
   border: 1px solid #333;
   display: flex;
   align-items: center;
@@ -56,15 +76,16 @@
   position: relative;
   background: #fff;
   font-weight: bold;
-  font-size: 10px;
+  font-size: clamp(8px, 1.5vw, 10px);
   border-radius: 4px;
+  flex: 0 0 auto;
 }
 
 .square-number {
   position: absolute;
   top: 2px;
-  left: 4px;
-  font-size: 9px;
+  left: 3px;
+  font-size: clamp(7px, 1.3vw, 9px);
   color: #666;
 }
 
@@ -104,37 +125,37 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 8px;
+  font-size: clamp(6px, 1.2vw, 8px);
   font-weight: bold;
   z-index: 1;
 }
 
 .snake-indicator {
-  bottom: 2px;
-  right: 2px;
+  bottom: 1px;
+  right: 1px;
   background: rgba(255, 0, 0, 0.1);
-  padding: 1px 3px;
+  padding: 1px 2px;
   border-radius: 3px;
   color: #d32f2f;
 }
 
 .ladder-indicator {
-  bottom: 2px;
-  right: 2px;
+  bottom: 1px;
+  right: 1px;
   background: rgba(0, 128, 0, 0.1);
-  padding: 1px 3px;
+  padding: 1px 2px;
   border-radius: 3px;
   color: #2e7d32;
 }
 
 .snake-icon,
 .ladder-icon {
-  font-size: 11px;
+  font-size: clamp(9px, 1.8vw, 11px);
   line-height: 1;
 }
 
 .destination {
-  font-size: 8px;
+  font-size: clamp(6px, 1.1vw, 8px);
   line-height: 1;
   white-space: nowrap;
 }
@@ -151,8 +172,8 @@
 }
 
 .player-piece {
-  width: 22px;
-  height: 22px;
+  width: clamp(16px, 4vw, 22px);
+  height: clamp(16px, 4vw, 22px);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   border: 2px solid #fff;
@@ -216,41 +237,46 @@
 
 .player-number {
   color: #fff;
-  font-size: 11px;
+  font-size: clamp(8px, 2vw, 11px);
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar {
-  min-width: 180px;
-  padding: 12px;
+  min-width: 120px;
+  max-width: 180px;
+  padding: 8px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 0 0 auto;
+  overflow-y: auto;
 }
 
 .message {
   background: #e3f2fd;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 6px;
   text-align: center;
   font-weight: 500;
-  font-size: 12px;
+  font-size: clamp(10px, 2vw, 12px);
+  flex-shrink: 0;
 }
 
 .dice-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .dice {
-  width: 50px;
-  height: 50px;
+  width: clamp(40px, 8vw, 50px);
+  height: clamp(40px, 8vw, 50px);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 8px;
   display: flex;
@@ -271,19 +297,19 @@
 }
 
 .dice-face {
-  font-size: 24px;
+  font-size: clamp(20px, 4vw, 24px);
   font-weight: bold;
   color: #fff;
 }
 
 .dice-container button {
-  padding: 6px 14px;
+  padding: 5px 12px;
   background: #667eea;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: clamp(11px, 2vw, 13px);
   font-weight: 600;
   transition: background 0.3s;
 }
@@ -299,24 +325,24 @@
 
 .info {
   background: #f5f5f5;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 6px;
 }
 
 .info p {
   margin: 4px 0;
-  font-size: 12px;
+  font-size: clamp(10px, 2vw, 12px);
 }
 
 .reset-btn {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   background: #ff6b6b;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: clamp(11px, 2vw, 13px);
   font-weight: 600;
   transition: background 0.3s;
 }
@@ -327,25 +353,26 @@
 
 .legend {
   background: #f5f5f5;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .legend h3 {
-  margin: 0 0 6px 0;
-  font-size: 13px;
+  margin: 0 0 5px 0;
+  font-size: clamp(11px, 2vw, 13px);
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 5px 0;
-  font-size: 11px;
+  gap: 5px;
+  margin: 4px 0;
+  font-size: clamp(9px, 1.8vw, 11px);
 }
 
 .legend-icon {
-  font-size: 13px;
+  font-size: clamp(11px, 2.2vw, 13px);
 }
 
 .setup-container {
@@ -356,34 +383,34 @@
   flex: 1;
   background: #fff;
   border-radius: 10px;
-  padding: 25px;
+  padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .setup-container h2 {
-  margin-bottom: 18px;
+  margin-bottom: 15px;
   color: #333;
-  font-size: 18px;
+  font-size: clamp(16px, 3vw, 18px);
 }
 
 .player-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   justify-content: center;
 }
 
 .player-select-btn {
-  padding: 12px 25px;
+  padding: 10px 20px;
   background: #667eea;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: clamp(13px, 2.5vw, 15px);
   font-weight: 600;
   transition: background 0.3s, transform 0.2s;
-  min-width: 100px;
+  min-width: 90px;
 }
 
 .player-select-btn:hover {
@@ -400,15 +427,15 @@
   align-items: center;
   gap: 8px;
   background: #f5f5f5;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 6px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: clamp(11px, 2vw, 13px);
 }
 
 .player-indicator {
-  width: 18px;
-  height: 18px;
+  width: clamp(16px, 3vw, 18px);
+  height: clamp(16px, 3vw, 18px);
   border-radius: 50%;
   border: 2px solid #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -416,13 +443,13 @@
 
 .players-list {
   background: #f5f5f5;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .players-list h3 {
-  margin: 0 0 8px 0;
-  font-size: 13px;
+  margin: 0 0 6px 0;
+  font-size: clamp(11px, 2vw, 13px);
   color: #333;
 }
 
@@ -430,12 +457,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px;
-  margin: 5px 0;
+  padding: 6px;
+  margin: 4px 0;
   background: #fff;
   border-radius: 6px;
   border-left: 4px solid transparent;
-  font-size: 12px;
+  font-size: clamp(10px, 2vw, 12px);
 }
 
 .player-item.active {
@@ -453,29 +480,94 @@
 
 .player-pos {
   color: #666;
-  font-size: 11px;
+  font-size: clamp(9px, 1.8vw, 11px);
 }
 
 .winner-badge {
-  font-size: 14px;
-  margin-left: 6px;
+  font-size: clamp(12px, 2.5vw, 14px);
+  margin-left: 5px;
 }
 
 .change-players-btn {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   background: #6c757d;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: clamp(11px, 2vw, 13px);
   font-weight: 600;
   transition: background 0.3s;
-  margin-top: 6px;
+  margin-top: 5px;
 }
 
 .change-players-btn:hover {
   background: #5a6268;
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    padding: 0;
+  }
+
+  .game-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar {
+    min-width: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    max-height: none;
+  }
+
+  .message,
+  .dice-container,
+  .current-player,
+  .reset-btn,
+  .change-players-btn {
+    flex: 1 1 auto;
+  }
+
+  .players-list {
+    flex: 1 1 100%;
+  }
+
+  .legend {
+    flex: 1 1 auto;
+  }
+
+  .board {
+    padding: 4px;
+  }
+
+  .square {
+    gap: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-container h1 {
+    font-size: 16px;
+    padding: 4px 0;
+  }
+
+  .sidebar {
+    flex-direction: column;
+  }
+
+  .players-list {
+    display: none;
+  }
+
+  .legend {
+    display: none;
+  }
 }
 
