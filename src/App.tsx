@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 
 const SNAKES: Record<number, number> = {
@@ -20,10 +20,10 @@ interface Player {
 }
 
 function Board({ players }: { players: Player[] }) {
-  const squares: JSX.Element[] = []
+  const squares: React.ReactElement[] = []
   
   for (let row = 9; row >= 0; row--) {
-    const rowSquares: JSX.Element[] = []
+    const rowSquares: React.ReactElement[] = []
     const isEvenRow = row % 2 === 0
     const startCol = isEvenRow ? 0 : 9
     const endCol = isEvenRow ? 10 : -1
@@ -184,7 +184,7 @@ function App() {
     setRolling(true)
     setMessage(`Player ${currentPlayer.id + 1} rolling...`)
     
-    const rolls = []
+    const rolls: number[] = []
     for (let i = 0; i < 10; i++) {
       rolls.push(Math.floor(Math.random() * 6) + 1)
     }
