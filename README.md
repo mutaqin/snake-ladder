@@ -1,73 +1,143 @@
-# React + TypeScript + Vite
+# Snake and Ladder Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive Snake and Ladder board game built with React, TypeScript, and Vite. This classic board game features smooth animations, multiplayer support, and a fully responsive design.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎮 **Multiplayer Support**: Play with 2-6 players
+- 🎯 **Step-by-Step Movement**: Realistic step-by-step player movement animations
+- 🐍 **Visual Snake Indicators**: Clear indicators showing snake positions and destinations
+- 🪜 **Visual Ladder Indicators**: Clear indicators showing ladder positions and destinations
+- 🎲 **Animated Dice**: Smooth dice rolling animation
+- 🎨 **Player Pieces**: Color-coded player pieces with numbered indicators
+- 📱 **Fully Responsive**: Optimized layout that works on desktop, tablet, and mobile devices
+- 🔄 **Turn-Based Gameplay**: Proper turn alternation with roll-6 rule
+- ✨ **Smooth Animations**: Bounce effects for player movement, jump animations for snakes and ladders
+- 🎉 **Win Celebration**: Celebratory message when a player reaches square 100
 
-## React Compiler
+## Game Rules
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+1. **Objective**: Be the first player to reach square 100
+2. **Movement**: Roll the dice and move your piece the corresponding number of squares
+3. **Turn System**: Players take turns in order (Player 1 → Player 2 → ... → Player 1)
+4. **Roll 6 Rule**: If you roll a 6, you get an extra turn
+5. **Snakes**: If you land on a snake's head, you slide down to its tail
+6. **Ladders**: If you land on a ladder's bottom, you climb up to its top
+7. **Win Condition**: Reach exactly square 100 to win
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd snake-ladder
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+```bash
+pnpm install
 ```
+
+## Running the Project
+
+### Development Mode
+```bash
+pnpm dev
+```
+
+The game will be available at `http://localhost:5173`
+
+### Build for Production
+```bash
+pnpm build
+```
+
+The optimized production build will be created in the `dist` directory.
+
+### Preview Production Build
+```bash
+pnpm preview
+```
+
+## Technologies Used
+
+- **React 18**: Modern React with Hooks
+- **TypeScript**: Type-safe development
+- **Vite**: Fast build tool and dev server
+- **CSS3**: Custom styling with responsive design and animations
+
+## Game Board Layout
+
+- **Board Size**: 10x10 grid (100 squares)
+- **Snakes**: 10 snakes placed at various positions
+- **Ladders**: 9 ladders placed at various positions
+- **Player Colors**: 6 distinct colors for player identification
+
+## Snake Positions
+
+| Start | End |
+|-------|------|
+| 16    | 6    |
+| 47    | 26   |
+| 49    | 11   |
+| 56    | 53   |
+| 62    | 19   |
+| 64    | 60   |
+| 87    | 24   |
+| 93    | 73   |
+| 95    | 75   |
+| 98    | 78   |
+
+## Ladder Positions
+
+| Start | End |
+|-------|------|
+| 1     | 38   |
+| 4     | 14   |
+| 9     | 31   |
+| 21    | 42   |
+| 28    | 84   |
+| 36    | 44   |
+| 51    | 67   |
+| 71    | 91   |
+| 80    | 100  |
+
+## Project Structure
+
+```
+snake-ladder/
+├── src/
+│   ├── App.tsx          # Main game component
+│   ├── App.css          # Game styles
+│   └── main.tsx        # Entry point
+├── public/             # Static assets
+├── index.html          # HTML template
+├── package.json        # Project dependencies
+├── tsconfig.json       # TypeScript configuration
+├── vite.config.ts     # Vite configuration
+└── README.md          # This file
+```
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Future Enhancements
+
+- [ ] Sound effects for dice rolling and player movement
+- [ ] Game history and statistics
+- [ ] Customizable board layout
+- [ ] AI opponents
+- [ ] Online multiplayer support
+- [ ] Leaderboard and high scores
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
